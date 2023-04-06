@@ -50,6 +50,7 @@ contract ShareableTest is BaseTest {
         underTest.deposit(30e18);
 
         assertEq(underTest.totalWeight(), 1e18);
+        assertEq(underTest.systemBalance(), 30e18);
         assertEq(underTest.getShareOf(userA), 1e18);
         assertEq(underTest.getCropsOf(userA), 0);
     }
@@ -103,6 +104,7 @@ contract ShareableTest is BaseTest {
         underTest.exit();
 
         assertEq(underTest.totalWeight(), 0);
+        assertEq(underTest.systemBalance(), 0);
         assertEq(underTest.getShareOf(userA), 0);
         assertEq(underTest.getCropsOf(userA), 0);
     }
@@ -215,6 +217,7 @@ contract PoolShareable is Shareable, TokenTransferrer {
         uint256 cachedBalance = balances[msg.sender];
 
         balances[msg.sender] = 0;
+        systemBalance -= cachedBalance;
         _exitShare(msg.sender);
 
         _performTokenTransfer(stakingToken, msg.sender, cachedBalance, false);
