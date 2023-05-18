@@ -75,7 +75,7 @@ contract BaseTest is Test, TokenTransferrer {
     }
 
     function _sendETH(address _to, uint256 _amount) internal {
-        _performTokenTransfer(address(0), _to, _amount, false);
+        _performTokenTransfer(address(0), _to, _amount);
     }
 
     function expectTransfer(address _token, address _to, uint256 _amount) internal {
