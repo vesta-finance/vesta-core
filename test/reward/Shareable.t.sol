@@ -183,7 +183,7 @@ contract PoolShareable is Shareable, TokenTransferrer {
 
         uint256 newShare = 1e18;
 
-        _performTokenTransferFrom(stakingToken, msg.sender, address(this), _value, false);
+        _performTokenTransferFrom(stakingToken, msg.sender, address(this), _value);
         balances[msg.sender] += _value;
 
         if (totalWeight > 0) {
@@ -208,7 +208,7 @@ contract PoolShareable is Shareable, TokenTransferrer {
         systemBalance -= _value;
         _partialExitShare(msg.sender, newShare);
 
-        _performTokenTransfer(stakingToken, msg.sender, _value, false);
+        _performTokenTransfer(stakingToken, msg.sender, _value);
     }
 
     function exit() external {
@@ -220,7 +220,7 @@ contract PoolShareable is Shareable, TokenTransferrer {
         systemBalance -= cachedBalance;
         _exitShare(msg.sender);
 
-        _performTokenTransfer(stakingToken, msg.sender, cachedBalance, false);
+        _performTokenTransfer(stakingToken, msg.sender, cachedBalance);
     }
 
     function _crop() internal view override returns (uint256) {
@@ -237,7 +237,7 @@ contract PoolShareable is Shareable, TokenTransferrer {
 
         if (curr > last) {
             uint256 sendingReward = curr - last;
-            _performTokenTransfer(rewardToken, msg.sender, sendingReward, false);
+            _performTokenTransfer(rewardToken, msg.sender, sendingReward);
         }
 
         stock = _balanceOf(rewardToken, address(this));
