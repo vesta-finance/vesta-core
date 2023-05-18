@@ -12,14 +12,12 @@ import { IERC20Callback } from "./interface/IERC20Callback.sol";
  * @dev Modified version of Seaport.
  */
 abstract contract TokenTransferrer is TokenTransferrerErrors {
-    function _performTokenTransfer(
-        address token,
-        address to,
-        uint256 amount,
-        bool sendCallback
-    ) internal returns (bool) {
+    function _performTokenTransfer(address token, address to, uint256 amount)
+        internal
+        returns (bool)
+    {
         if (token == address(0)) {
-            (bool success,) = to.call{value: amount}(new bytes(0));
+            (bool success,) = to.call{ value: amount }(new bytes(0));
 
             return success;
         }
@@ -179,7 +177,6 @@ abstract contract TokenTransferrer is TokenTransferrerErrors {
             mstore(ZeroSlot, 0)
         }
 
-        _tryPerformCallback(token, to, amount, sendCallback);
         return true;
     }
 
@@ -187,8 +184,7 @@ abstract contract TokenTransferrer is TokenTransferrerErrors {
         address token,
         address from,
         address to,
-        uint256 amount,
-        bool sendCallback
+        uint256 amount
     ) internal {
         // Utilize assembly to perform an optimized ERC20 token transfer.
         assembly {
@@ -349,23 +345,6 @@ abstract contract TokenTransferrer is TokenTransferrerErrors {
             // Restore the zero slot to zero.
             mstore(ZeroSlot, 0)
         }
-
-        _tryPerformCallback(token, to, amount, sendCallback);
-    }
-
-    function _tryPerformCallback(
-        address _token,
-        address _to,
-        uint256 _amount,
-        bool _useCallback
-    ) private {
-        if (!_useCallback || _to.code.length == 0) return;
-
-        if (address(this) == _to) {
-            revert SelfCallbackTransfer();
-        }
-
-        IERC20Callback(_to).receiveERC20(_token, _amount);
     }
 
     /**
