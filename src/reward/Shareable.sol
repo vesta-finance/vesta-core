@@ -29,15 +29,20 @@ abstract contract Shareable is IShareable {
             userShares[_wallet] += wad;
         }
         crops[_wallet] = Math.rmulup(userShares[_wallet], share);
-        emit ShareUpdated(_value);
+        emit ShareUpdated(_wallet, _value);
     }
 
     function _partialExitShare(address _wallet, uint256 _newShare) internal virtual {
-        _exitShare(_wallet);
+        _exit(_wallet);
         _addShare(_wallet, _newShare);
     }
 
     function _exitShare(address _wallet) internal virtual {
+        _exit(_wallet);
+        emit ShareUpdated(_wallet, 0);
+    }
+
+    function _exit(address _wallet) private {
         uint256 value = userShares[_wallet];
 
         if (value > 0) {
@@ -50,7 +55,6 @@ abstract contract Shareable is IShareable {
         }
 
         crops[_wallet] = Math.rmulup(userShares[_wallet], share);
-        emit ShareUpdated(value);
     }
 
     function netAssetsPerShareWAD() public view override returns (uint256) {
