@@ -33,16 +33,16 @@ abstract contract Shareable is IShareable {
     }
 
     function _partialExitShare(address _wallet, uint256 _newShare) internal virtual {
-        _exit(_wallet);
+        _deleteShare(_wallet);
         _addShare(_wallet, _newShare);
     }
 
     function _exitShare(address _wallet) internal virtual {
-        _exit(_wallet);
+        _deleteShare(_wallet);
         emit ShareUpdated(_wallet, 0);
     }
 
-    function _exit(address _wallet) private {
+    function _deleteShare(address _wallet) private {
         uint256 value = userShares[_wallet];
 
         if (value > 0) {
