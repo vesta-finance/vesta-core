@@ -20,3 +20,4 @@ hardhat
 
 # Added by cargo
 /target
+.VSCodeCounter/
